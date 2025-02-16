@@ -263,14 +263,18 @@ const styles = StyleSheet.create({
         backgroundColor: '#ffffff',
     },
     yearContainer: {
-        backgroundColor: "#f3f4f6",
-        borderRadius: 15,
+        backgroundColor: "#F2F2F7",
+        borderRadius: 40,
         padding: 20,
-        height: 120,
+        height: 300,
         justifyContent: "flex-start",
         position: "relative",
-        width: '90%',
-        marginBottom: 20,
+        marginBottom: 0,
+        marginTop: 20,
+        marginHorizontal: 16,
+        borderWidth: 1,
+        borderColor: '',
+    
     },
     yearText: {
         fontSize: 22,
@@ -291,6 +295,7 @@ const styles = StyleSheet.create({
     shapeThree: { width: 40, height: 40, bottom: 20, right: 10 },
     profileContainer: {
         flexDirection: 'row',
+        padding: 16,
         alignItems: 'center',
         marginBottom: 16,
     },
@@ -313,6 +318,7 @@ const styles = StyleSheet.create({
     },
     badgesContainer: {
         flexDirection: "row",
+        padding: 16,
         marginTop: 10,
     },
     badge: {
