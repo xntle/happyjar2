@@ -7,6 +7,7 @@ import { supabase } from '../lib/supabase';
 
 const SignUp = () => {
   const [name, setName] = useState('');
+  const [bio, setBio] = useState('')
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -26,7 +27,8 @@ const SignUp = () => {
       password,
       options: {
         data: {
-            name
+            name,
+            bio
         }
       }
     });
@@ -51,6 +53,14 @@ const SignUp = () => {
         placeholderTextColor="#888"
         onChangeText={setName}
         value={name}
+        autoCapitalize="words"
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Position"
+        placeholderTextColor="#888"
+        onChangeText={setBio}
+        value={bio}
         autoCapitalize="words"
       />
 
