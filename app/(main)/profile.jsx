@@ -1,30 +1,88 @@
-import { Button, View, Text, StyleSheet, Image, TouchableOpacity, ScrollView } from 'react-native';
-import React from 'react';
+
+
+import { Button, View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, ActivityIndicator } from 'react-native';
+import React, { useState, useEffect } from 'react';
 import ScreenWrapper from '../../components/ScreenWrapper';
-import { useAuth } from '../../context/AuthContext';
 import { useRouter } from 'expo-router';
-import Header from '../component/header'; // Import the Header component
+import { supabase } from '../../lib/supabase';
+import Header from '../component/header';
+import { useAuth } from '../../context/AuthContext';
+import { getUserData } from '../../services/userService';
 
 const Profile = () => {
-    const { user, setAuth } = useAuth(); // Assume `user` contains profile data
-    const router = useRouter();
+     const router = useRouter();
+    const { user, setAuth } = useAuth(); // Get user and setAuth from context
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchUserProfile = async () => {
+            setLoading(true);
+
+            // Get session user
+            const { data: { session }, error } = await supabase.auth.getSession();
+
+            if (error || !session?.user) {
+                console.error("Error fetching session:", error);
+                setLoading(false);
+                return;
+            }
+
+            // Get user details from session metadata
+            const sessionUser = session.user;
+            const sessionData = {
+                id: sessionUser.id,
+                name: sessionUser?.user_metadata?.name || "Anonymous",
+                bio: sessionUser?.user_metadata?.bio || "No bio available",
+                profileImage: sessionUser?.user_metadata?.profileImage || "https://via.placeholder.com/150",
+                title: sessionUser?.user_metadata?.title || "No title available",
+                email: sessionUser.email,
+            };
+
+            console.log("Session user:", sessionUser);
+
+            // If session has all required data, store in auth context
+            setAuth(sessionData);
+            setLoading(false);
+
+            // Fetch from Supabase if additional details are needed
+            const { success, data } = await getUserData(sessionUser.id);
+            if (success) {
+                const updatedUserData = {
+                    ...sessionData,
+                    name: data.name || sessionData.name,
+                    bio: data.bio || sessionData.bio,
+                    profileImage: data.profileImage || sessionData.profileImage,
+                    title: data.title || sessionData.title,
+                };
+                setAuth(updatedUserData); // Update user in context
+            }
+        };
+
+        fetchUserProfile();
+    }, []);
+
+    if (loading) {
+        return (
+            <View style={styles.loadingContainer}>
+                <ActivityIndicator size="large" color="#0000ff" />
+            </View>
+        );
+    }
+
 
     return (
         <ScreenWrapper>
 
-            
-            {/* Header */}
-            <Header title="Profile" />
-
             <ScrollView contentContainerStyle={styles.scrollContainer}>
+            <Header></Header>
                 {/* Year Section */}
-                <View style={styles.yearContainer}>
-                    <Text style={styles.yearText}>2025</Text>
+                {/* <View style={styles.yearContainer}>
+                    <Text style={styles.yearText}>2025</Text> */}
                     {/* Floating Abstract Shapes */}
-                    <View style={[styles.shape, styles.shapeOne]} />
+                    {/* <View style={[styles.shape, styles.shapeOne]} />
                     <View style={[styles.shape, styles.shapeTwo]} />
                     <View style={[styles.shape, styles.shapeThree]} />
-                </View>
+                </View> */}
 
                 {/* Profile Section */}
                 <View style={styles.profileContainer}>
@@ -36,8 +94,8 @@ const Profile = () => {
                     
                     {/* Profile Details */}
                     <View>
-                        <Text style={styles.name}>{user?.name || 'Ada Lovelace'}</Text>
-                        <Text style={styles.title}>{user?.title || 'Product Designer, Department'}</Text>
+                        <Text style={styles.name}>{user?.name || 'Anonymous'}</Text>
+                        <Text style={styles.title}>{user?.title || 'N/A'}</Text>
                     </View>
                 </View>
 
@@ -139,6 +197,8 @@ export default Profile;
 const styles = StyleSheet.create({
     scrollContainer: {
         paddingBottom: 30,
+        backgroundColor: '#fff',
+
     },
     yearSelector: {
         flexDirection: 'row',
@@ -343,3 +403,5 @@ const styles = StyleSheet.create({
         fontSize: 16,
     },
 });
+
+
