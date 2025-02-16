@@ -9,7 +9,7 @@ const ScreenWrapper = ({children,bg}) => {
     const paddingTop = top>0? top+5: 30;
 
     return (
-        <View style={{flex: 1, paddingTop, backgroundColor: bg}}>
+        <View style={{flex: 1, paddingTop, backgroundColor: "#fff"}}>
         {
             children
         }

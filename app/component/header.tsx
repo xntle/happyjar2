@@ -17,10 +17,10 @@ const Header = () => {
             {/* Icons */}
             <View style={styles.rightSection}>
                 <TouchableOpacity style={styles.iconButton}>
-                    <Feather name="bell" size={22} color="black" />
+                    <Feather name="bell" size={20} color="black" />
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.iconButton}>
-                    <FontAwesome5 name="ellipsis-v" size={20} color="black" />
+                    <FontAwesome5 name="ellipsis-v" size={18} color="black" />
                 </TouchableOpacity>
             </View>
         </View>
@@ -41,18 +41,19 @@ const styles = StyleSheet.create({
         alignItems: "center",
     },
     logo: {
-        width: 30,
-        height: 30,
+        width: 40,
+        height: 50,
         marginRight: 8,
     },
     title: {
-        fontSize: 18,
+        fontSize: 24,
         fontWeight: "bold",
-        color: "#000",
+        color: "#1A1A1A",
     },
     rightSection: {
         flexDirection: "row",
         alignItems: "center",
+        marginLeft: 20,
     },
     iconButton: {
         marginLeft: 16,

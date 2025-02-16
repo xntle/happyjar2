@@ -197,7 +197,8 @@ export default Profile;
 const styles = StyleSheet.create({
     scrollContainer: {
         paddingBottom: 30,
-        backgroundColor: '#fff',
+                backgroundColor: '#fff',
+
 
     },
     yearSelector: {
