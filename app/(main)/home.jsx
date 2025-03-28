@@ -18,6 +18,7 @@ import { hp, wp } from "../../helpers/common";
 import Avatar from "../../components/Avatar";
 import { getUserImageSrc } from "../../services/imageService";
 import Header from "../component/header"; 
+import { TouchableOpacity } from "react-native";
 
 const Home = () => {
   const { user, setAuth } = useAuth();
@@ -54,6 +55,16 @@ const Home = () => {
         <Button title="Logout" onPress={onLogout} />
         <Button title="Go to Profile" onPress={() => router.push("profile")} />
       </View>
+
+      <TouchableOpacity
+          style={styles.logoutButton}
+          onPress={() => {
+            setAuth(null); // Clear auth context
+            router.replace("/login"); // Redirect to login page
+          }}
+        >
+          <Text style={styles.logoutText}>Log Out</Text>
+        </TouchableOpacity>
     </ScreenWrapper>
   );
 };
