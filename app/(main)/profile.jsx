@@ -1,3 +1,4 @@
+// padding: 16
 import {
   Button,
   View,
@@ -245,7 +246,7 @@ const styles = StyleSheet.create({
     color: "#333333",
     textAlign: "center",
     marginVertical: 10,
-    paddingHorizontal: 20,
+    paddingHorizontal: 16,
     marginTop: 16,
   },
   statsRow: {
@@ -282,7 +283,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "600",
     marginTop: 20,
-    marginLeft: 20,
+    marginLeft: 16,
     color: "#111827",
   },
   memoryItem: {
