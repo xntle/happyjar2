@@ -1,18 +1,4 @@
-<<<<<<< Updated upstream
-// padding: 16
-import {
-  Button,
-  View,
-  Text,
-  StyleSheet,
-  Image,
-  TouchableOpacity,
-  ScrollView,
-  ActivityIndicator,
-} from "react-native";
-=======
 import { Button, View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, ActivityIndicator } from "react-native";
->>>>>>> Stashed changes
 import React, { useState, useEffect } from "react";
 import ScreenWrapper from "../../components/ScreenWrapper";
 import { useRouter } from "expo-router";
