@@ -54,6 +54,8 @@ const Home = () => {
         <Button title="Swipe to get started" onPress={() => router.push("signUp")} />
         <Button title="Logout" onPress={onLogout} />
         <Button title="Go to Profile" onPress={() => router.push("profile")} />
+        <Button title="Go to My Profile" onPress={() => router.push("myProfile")} />
+        <Button title="Go to Test Sheet" onPress={() => router.push("testSheet")} />
       </View>
 
       <TouchableOpacity
