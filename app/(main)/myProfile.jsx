@@ -153,6 +153,7 @@ export default function MyProfile() {
 
             </View>
             
+            
           </ScrollView>
         </ScreenWrapper>
   );

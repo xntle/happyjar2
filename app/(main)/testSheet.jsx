@@ -3,6 +3,9 @@ import { Dimensions, StyleSheet, View, Pressable, Text } from "react-native";
 import Animated, { useSharedValue, useAnimatedStyle, withTiming, useAnimatedGestureHandler } from "react-native-reanimated";
 import { Gesture, GestureHandlerRootView, PanGestureHandler } from "react-native-gesture-handler";
 import MyProfile from "./myProfile";
+import JarHeader from "../component/jarHeader";
+import FloatingActionButton from "../component/floatingActionButton.tsx";
+import { DiceFive, Jar } from "phosphor-react-native";
 
 const SCREEN_HEIGHT = Dimensions.get("window").height;
 const SHEET_HEIGHT = 700; // Adjust as needed
@@ -49,6 +52,23 @@ export default function TopSheet() {
       <Pressable onPress={openSheet} style={styles.openButton}>
         <Text style={styles.openButtonText}>Open Top Sheet</Text>
       </Pressable>
+      <JarHeader />
+      <FloatingActionButton
+        onPress={() => console.log('Dice pressed')}
+        size={64}
+        icon={<DiceFive size={32} color="#000" style={{ transform: [{ rotate: '22.5deg' }] }} />}
+        backgroundColor="#fff"
+        style={styles.bottomLeftButton}
+      />
+
+      {/* Bottom-Right Round Button */}
+      <FloatingActionButton
+        onPress={() => console.log('Calendar pressed')}
+        size={64}
+        icon={<Jar size={32} color="#000" />}
+        backgroundColor="#fff"
+        style={styles.bottomRightButton}
+      />
       <PanGestureHandler onGestureEvent={gestureHandler}>
         <Animated.View style={[styles.topSheet, animatedStyle]}>
           {/* <Pressable onPress={closeSheet} style={styles.closeButton}>
@@ -95,5 +115,15 @@ const styles = StyleSheet.create({
   },
   closeButtonText: {
     color: "red",
+  },
+  bottomLeftButton: {
+    position: 'absolute',
+    bottom: 50,
+    left: 16,
+  },
+  bottomRightButton: {
+    position: 'absolute',
+    bottom: 50,
+    right: 16,
   },
 });
