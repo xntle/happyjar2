@@ -91,12 +91,12 @@ export default function TabBar({ state, descriptors, navigation }: BottomTabBarP
 const styles = StyleSheet.create({
   tabBarContainer: {
     flexDirection: 'row',
-    alignItems: 'center',
-    height: 60,
-    backgroundColor: '#fff',
-    borderTopColor: '#ddd',
-    borderTopWidth: 1,
+    alignItems: 'bottom',
+    justifyContent: 'center',
+    height: 96,
+    backgroundColor: '#888888',
   },
+
   tabItem: {
     flex: 1,
     alignItems: 'center',
@@ -115,27 +115,23 @@ const styles = StyleSheet.create({
   labelFocused: {
     color: 'tomato',
   },
-  // The central plus button styles:
+  // Updated middle button styles:
   midButtonContainer: {
-    width: 70,
+    flex: 1,
     alignItems: 'center',
   },
   midButton: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    backgroundColor: 'tomato',
+    width: 64,
+    height: 64,
+    borderRadius: 32,
+    backgroundColor: '#000000',
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: Platform.OS === 'android' ? -10 : -20,
-    elevation: 2,
-    shadowColor: '#000',
-    shadowRadius: 2,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
   },
   midButtonIcon: {
     fontSize: 24,
     color: '#fff',
+    alignSelf: 'center',
+    verticalAlign: 'middle',
   },
 });

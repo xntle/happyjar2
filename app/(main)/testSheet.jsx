@@ -56,7 +56,7 @@ export default function TopSheet() {
       <FloatingActionButton
         onPress={() => console.log('Dice pressed')}
         size={64}
-        icon={<DiceFive size={32} color="#000" style={{ transform: [{ rotate: '22.5deg' }] }} />}
+        icon={<DiceFive size={32} color="#5A5A5A" style={{ transform: [{ rotate: '22.5deg' }] }} />}
         backgroundColor="#fff"
         style={styles.bottomLeftButton}
       />
@@ -65,9 +65,10 @@ export default function TopSheet() {
       <FloatingActionButton
         onPress={() => console.log('Calendar pressed')}
         size={64}
-        icon={<Jar size={32} color="#000" />}
+        icon={<Jar size={32} color="#5A5A5A" />}
         backgroundColor="#fff"
         style={styles.bottomRightButton}
+        badgeCount={4}
       />
       <PanGestureHandler onGestureEvent={gestureHandler}>
         <Animated.View style={[styles.topSheet, animatedStyle]}>

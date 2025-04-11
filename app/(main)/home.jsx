@@ -19,10 +19,11 @@ import Avatar from "../../components/Avatar";
 import { getUserImageSrc } from "../../services/imageService";
 import Header from "../component/header"; 
 import { TouchableOpacity } from "react-native";
+import TabBar from "../component/tabBar";
 
 const Home = () => {
   const { user, setAuth } = useAuth();
-  const router = useRouter(); // Initialize router
+  const router = useRouter();
 
   const onLogout = async () => {
     const { error } = await supabase.auth.signOut();
@@ -35,39 +36,35 @@ const Home = () => {
   };
 
   return (
-    <ScreenWrapper>
+    <View style={styles.container}>
       <StatusBar style="dark" />
-
-      {/* ✅ Added Header at the Top */}
       <Header title="Home" />
 
-      <View style={styles.container}>
-        <View style={styles.profileContainer}>
-          <Text style={styles.mailTitle}>HappyJar</Text>
-          <Text style={styles.description}>
-            Make someone's day. Tell them about what they did that brought you joy.
-          </Text>
-        </View>
-
-        <View style={styles.messageBox} />
-
-        <Button title="Swipe to get started" onPress={() => router.push("signUp")} />
-        <Button title="Logout" onPress={onLogout} />
-        <Button title="Go to Profile" onPress={() => router.push("profile")} />
-        <Button title="Go to My Profile" onPress={() => router.push("myProfile")} />
-        <Button title="Go to Test Sheet" onPress={() => router.push("testSheet")} />
+      <View style={styles.profileContainer}>
+        <Text style={styles.mailTitle}>HappyJar</Text>
+        <Text style={styles.description}>
+          Make someone's day. Tell them about what they did that brought you joy.
+        </Text>
       </View>
 
+      <View style={styles.messageBox} />
+
+      <Button title="Swipe to get started" onPress={() => router.push("signUp")} />
+      <Button title="Logout" onPress={onLogout} />
+      <Button title="Go to Profile" onPress={() => router.push("profile")} />
+      <Button title="Go to My Profile" onPress={() => router.push("myProfile")} />
+      <Button title="Go to Test Sheet" onPress={() => router.push("testSheet")} />
+
       <TouchableOpacity
-          style={styles.logoutButton}
-          onPress={() => {
-            setAuth(null); // Clear auth context
-            router.replace("/login"); // Redirect to login page
-          }}
-        >
-          <Text style={styles.logoutText}>Log Out</Text>
-        </TouchableOpacity>
-    </ScreenWrapper>
+        style={styles.logoutButton}
+        onPress={() => {
+          setAuth(null);
+          router.replace("/login");
+        }}
+      >
+        <Text style={styles.logoutText}>Log Out</Text>
+      </TouchableOpacity>
+    </View>
   );
 };
 
@@ -130,5 +127,18 @@ const styles = StyleSheet.create({
     textAlign: "center",
     color: theme.colors.text,
     fontSize: hp(1.6),
+  },
+  logoutButton: {
+    backgroundColor: theme.colors.primary,
+    padding: hp(2),
+    borderRadius: wp(2),
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: hp(3),
+  },
+  logoutText: {
+    color: "white",
+    fontSize: hp(1.8),
+    fontWeight: "bold",
   },
 });
