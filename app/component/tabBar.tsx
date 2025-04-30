@@ -4,13 +4,55 @@ import {
   Text,
   TouchableOpacity,
   StyleSheet,
-  Platform
+  Platform,
+  StyleProp,
+  ViewStyle,
+  TextStyle
 } from 'react-native';
-import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { usePathname } from 'expo-router';
 
-export default function TabBar({ state, descriptors, navigation }: BottomTabBarProps) {
+// Define our own props instead of depending on @react-navigation/bottom-tabs
+interface Route {
+  key: string;
+  name: string;
+}
+
+interface TabBarProps {
+  state: {
+    index: number;
+    routes: Route[];
+  };
+  descriptors: {
+    [key: string]: {
+      options: {
+        tabBarLabel?: string;
+        title?: string;
+      };
+      navigation: {
+        emit: () => { defaultPrevented: boolean };
+        isFocused: () => boolean;
+      };
+    };
+  };
+  navigation: {
+    navigate: (name: string) => void;
+    emit: () => { defaultPrevented: boolean };
+    isFocused: () => boolean;
+  };
+}
+
+export default function TabBar({ state, descriptors, navigation }: TabBarProps) {
   const insets = useSafeAreaInsets();
+  const pathname = usePathname();
+  
+  // Hide tab bar on login, signup, and welcome screens
+  const hideTabBarScreens = ['/login', '/signUp', '/welcome'];
+  
+  // Check if current pathname should hide the tab bar
+  if (hideTabBarScreens.includes(pathname as string)) {
+    return null;
+  }
 
   // A helper function to handle tab press
   const handlePress = (routeName: string, isFocused: boolean, index: number) => {
@@ -26,7 +68,7 @@ export default function TabBar({ state, descriptors, navigation }: BottomTabBarP
   };
 
   return (
-    <View style={[styles.tabBarContainer, { paddingBottom: insets.bottom }]}>
+    <View style={[styles.tabBarContainer, { paddingBottom: insets.bottom } as ViewStyle]}>
       {state.routes.map((route, index) => {
         // isFocused for the current tab
         const isFocused = state.index === index;
@@ -57,11 +99,11 @@ export default function TabBar({ state, descriptors, navigation }: BottomTabBarP
             <TouchableOpacity
               key={route.key}
               onPress={() => handlePress(route.name, isFocused, index)}
-              style={styles.midButtonContainer}
+              style={styles.midButtonContainer as StyleProp<ViewStyle>}
               activeOpacity={0.8}
             >
-              <View style={styles.midButton}>
-                <Text style={styles.midButtonIcon}>{iconName}</Text>
+              <View style={styles.midButton as StyleProp<ViewStyle>}>
+                <Text style={styles.midButtonIcon as StyleProp<TextStyle>}>{iconName}</Text>
               </View>
             </TouchableOpacity>
           );
@@ -72,13 +114,19 @@ export default function TabBar({ state, descriptors, navigation }: BottomTabBarP
           <TouchableOpacity
             key={route.key}
             onPress={() => handlePress(route.name, isFocused, index)}
-            style={styles.tabItem}
+            style={styles.tabItem as StyleProp<ViewStyle>}
             activeOpacity={0.8}
           >
-            <Text style={[styles.icon, isFocused && styles.iconFocused]}>
+            <Text style={[
+              styles.icon as StyleProp<TextStyle>, 
+              isFocused && (styles.iconFocused as StyleProp<TextStyle>)
+            ]}>
               {iconName}
             </Text>
-            <Text style={[styles.label, isFocused && styles.labelFocused]}>
+            <Text style={[
+              styles.label as StyleProp<TextStyle>, 
+              isFocused && (styles.labelFocused as StyleProp<TextStyle>)
+            ]}>
               {label}
             </Text>
           </TouchableOpacity>
@@ -91,7 +139,7 @@ export default function TabBar({ state, descriptors, navigation }: BottomTabBarP
 const styles = StyleSheet.create({
   tabBarContainer: {
     flexDirection: 'row',
-    alignItems: 'bottom',
+    alignItems: 'flex-end',
     justifyContent: 'center',
     height: 96,
     backgroundColor: '#888888',
