@@ -11,8 +11,8 @@ import {
   GestureHandlerRootView,
   PanGestureHandler,
 } from "react-native-gesture-handler";
-import MyProfile from "./myProfile";
-import JarHeader from "../component/jarHeader";
+import MyProfile from "./myProfile.jsx";
+import JarHeader from "../component/jarHeader.tsx";
 import FloatingActionButton from "../component/floatingActionButton.tsx";
 import { DiceFive, Jar } from "phosphor-react-native";
 
