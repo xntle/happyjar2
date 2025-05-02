@@ -1,276 +1,144 @@
-// padding: 16
+import React from "react";
+import { Dimensions, StyleSheet, View, Pressable, Text } from "react-native";
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withTiming,
+  useAnimatedGestureHandler,
+} from "react-native-reanimated";
 import {
-  Button,
-  View,
-  Text,
-  StyleSheet,
-  Image,
-  TouchableOpacity,
-  ScrollView,
-  ActivityIndicator,
-} from "react-native";
-import React, { useState, useEffect } from "react";
-import ScreenWrapper from "../../components/ScreenWrapper";
-import { useRouter } from "expo-router";
-import { supabase } from "../../lib/supabase";
-import Header from "../component/header";
-import { useAuth } from "../../context/AuthContext";
-import { getUserData } from "../../services/userService";
-import { Heart, Camera, Mail } from "lucide-react-native";
-import { useFetchUserProfile } from "../hooks/fetchUser";
+  Gesture,
+  GestureHandlerRootView,
+  PanGestureHandler,
+} from "react-native-gesture-handler";
+import MyProfile from "./myProfile";
+import JarHeader from "../component/jarHeader";
+import FloatingActionButton from "../component/floatingActionButton.tsx";
+import { DiceFive, Jar } from "phosphor-react-native";
 
-const Profile = () => {
-  const router = useRouter();
-  const { user } = useAuth();
-  const { loading } = useFetchUserProfile();
+const SCREEN_HEIGHT = Dimensions.get("window").height;
+const SHEET_HEIGHT = 700; // Adjust as needed
 
-  if (loading) {
-    return (
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#0000ff" />
-      </View>
-    );
-  }
+export default function Profile() {
+  const translateY = useSharedValue(-SHEET_HEIGHT);
+
+  const gestureHandler = useAnimatedGestureHandler({
+    onStart: (event, context) => {
+      context.startY = translateY.value;
+    },
+    onActive: (event, context) => {
+      let newValue = context.startY + event.translationY;
+      if (newValue > 0) {
+        newValue = 0;
+      }
+      translateY.value = newValue;
+    },
+    onEnd: (event) => {
+      if (event.translationY < -50 || event.velocityY < -500) {
+        // If swiped upward enough, dismiss the sheet
+        translateY.value = withTiming(-SHEET_HEIGHT + 200, { duration: 300 });
+      } else {
+        // Otherwise, snap back to open state
+        translateY.value = withTiming(0, { duration: 300 });
+      }
+    },
+  });
+
+  const animatedStyle = useAnimatedStyle(() => ({
+    transform: [{ translateY: translateY.value }],
+  }));
+
+  const openSheet = () => {
+    translateY.value = withTiming(0, { duration: 300 });
+  };
+
+  const closeSheet = () => {
+    translateY.value = withTiming(-SHEET_HEIGHT, { duration: 300 });
+  };
 
   return (
-    <ScreenWrapper>
-      <Header />
-      <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
-        <View style={styles.headerContainer}>
-          {/* Profile Image */}
-          <View style={styles.coverImage}>
-            <Image
-              source={require("../../assets/images/default.jpg")} // Use your actual local path
-              style={styles.coverImage}
-            />
-          </View>
+    <GestureHandlerRootView>
+      <Pressable onPress={openSheet} style={styles.openButton}>
+        <Text style={styles.openButtonText}>Open Top Sheet</Text>
+      </Pressable>
+      <JarHeader />
+      <FloatingActionButton
+        onPress={() => console.log("Dice pressed")}
+        size={64}
+        icon={
+          <DiceFive
+            size={32}
+            color="#5A5A5A"
+            style={{ transform: [{ rotate: "22.5deg" }] }}
+          />
+        }
+        backgroundColor="#fff"
+        style={styles.bottomLeftButton}
+      />
 
-          {/* Profile Image - on top of cover */}
-          <View style={styles.avatarWrapper}>
-            <Image
-              source={
-                { uri: user?.profileImage } ||
-                require("../../assets/images/default.jpg")
-              }
-              style={styles.profileImage}
-            />
-            {/* You can add logos like Google as overlays here if needed */}
-          </View>
-
-          {/* Name & Title */}
-          <Text style={styles.nameText}>{user?.name || "Anonymous"}</Text>
-          <Text style={styles.jobText}>
-            {user?.title || "No title available"}
-          </Text>
-          {/* Hard-coded location (update as needed) */}
-          <Text style={styles.locationText}>New York, United States</Text>
-
-          {/* Bio / Description */}
-          <Text style={styles.descriptionText}>
-            {user?.bio ||
-              "Sapien nisl fermentum eget in ipsum duis lorem. Nec varius tempor quam."}
-          </Text>
-
-          <View style={styles.largeStatsRow}>
-            <View style={styles.largeStatItem}>
-              <Heart size={16} color="#303030" style={styles.iconSpacing} />
-              <Text style={styles.largeStatNumber}>{user?.totalLikes}</Text>
-            </View>
-
-            <View style={styles.largeStatItem}>
-              <Camera size={16} color="#303030" style={styles.iconSpacing} />
-              <Text style={styles.largeStatNumber}>{user?.totalPraise}</Text>
-            </View>
-
-            <View style={styles.largeStatItem}>
-              <Mail size={16} color="#303030" style={styles.iconSpacing} />
-              <Text style={styles.largeStatNumber}>{user?.totalNotes}</Text>
-            </View>
-          </View>
-        </View>
-
-        <Text style={styles.sectionTitle}>Memories</Text>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-          {/* Replace these placeholders with real images or dynamic data */}
-          <View style={styles.memoryItem}>
-            <Image
-              source={{ uri: "https://via.placeholder.com/100x100" }}
-              style={styles.memoryImage}
-            />
-          </View>
-          <View style={styles.memoryItem}>
-            <Image
-              source={{ uri: "https://via.placeholder.com/100x100" }}
-              style={styles.memoryImage}
-            />
-          </View>
-          <View style={styles.memoryItem}>
-            <Image
-              source={{ uri: "https://via.placeholder.com/100x100" }}
-              style={styles.memoryImage}
-            />
-          </View>
-          <View style={styles.memoryItem}>
-            <Image
-              source={{ uri: "https://via.placeholder.com/100x100" }}
-              style={styles.memoryImage}
-            />
-          </View>
-        </ScrollView>
-
-        <Text style={styles.sectionTitle}>Highlights</Text>
-
-        {/* Brand Value Section */}
-        <View style={styles.brandValueCard}>
-          <Text style={styles.brandValueText}>
-            Lorem ipsum dolor sit amet consectetur. A tristique habitant in
-            posuere. Turpis nunc ullamcorper lacus turpis nunc facilisis mollis
-            aliquam.
-          </Text>
-        </View>
-      </ScrollView>
-    </ScreenWrapper>
+      {/* Bottom-Right Round Button */}
+      <FloatingActionButton
+        onPress={() => console.log("Calendar pressed")}
+        size={64}
+        icon={<Jar size={32} color="#5A5A5A" />}
+        backgroundColor="#fff"
+        style={styles.bottomRightButton}
+        badgeCount={4}
+      />
+      <PanGestureHandler onGestureEvent={gestureHandler}>
+        <Animated.View style={[styles.topSheet, animatedStyle]}>
+          {/* <Pressable onPress={closeSheet} style={styles.closeButton}>
+            <Text style={styles.closeButtonText}>Close</Text>
+          </Pressable> */}
+          {/* Your top sheet content */}
+          <MyProfile />
+        </Animated.View>
+      </PanGestureHandler>
+    </GestureHandlerRootView>
   );
-};
-
-export default Profile;
+}
 
 const styles = StyleSheet.create({
-  loadingContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  container: {
-    flex: 1,
-    backgroundColor: "#FFFFFF",
-  },
-  coverImage: {
-    width: "120%",
-    height: 200,
-    resizeMode: "cover",
-  },
-  headerContainer: {
-    padding: 20,
-    alignItems: "center",
-  },
-  profileImage: {
-    width: 215,
-    height: 215,
-    borderRadius: 150,
-    marginBottom: 10,
-  },
-  avatarWrapper: {
+  topSheet: {
     position: "absolute",
-    top: 107,
-    alignSelf: "center",
-    zIndex: 10,
-  },
-  nameText: {
-    fontSize: 24,
-    marginTop: 116,
-    marginBottom: 8,
-    color: "#111827",
-  },
-  jobText: {
-    fontSize: 14,
-    color: "#111927",
-    marginBottom: 4,
-  },
-  locationText: {
-    fontSize: 14,
-    color: "#999999",
-    marginBottom: 8,
-  },
-  descriptionText: {
-    fontSize: 14,
-    color: "#333333",
-    textAlign: "center",
-    marginVertical: 10,
-    paddingHorizontal: 16,
-    marginTop: 16,
-  },
-  statsRow: {
-    flexDirection: "row",
-    marginTop: 10,
-  },
-  statItem: {
-    alignItems: "center",
-    marginHorizontal: 15,
-  },
-  statNumber: {
-    fontSize: 18,
-    fontWeight: "bold",
-  },
-  statLabel: {
-    fontSize: 12,
-    color: "#666666",
-  },
-  largeStatsRow: {
-    flexDirection: "row",
-    marginTop: 10,
-  },
-  largeStatItem: {
-    flexDirection: "row",
-    gap: 4,
-    alignItems: "center",
-    marginHorizontal: 15,
-  },
-  largeStatNumber: {
-    fontSize: 12,
-    color: "#85858B",
-  },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: "600",
-    marginTop: 20,
-    marginLeft: 16,
-    color: "#111827",
-  },
-  memoryItem: {
-    width: 100,
-    height: 100,
-    margin: 10,
-    borderRadius: 8,
+    top: 0,
+    left: 0,
+    right: 0,
+    height: SHEET_HEIGHT,
+    backgroundColor: "white",
+    borderBottomLeftRadius: 28,
+    borderBottomRightRadius: 28,
+    shadowColor: "#000",
+    shadowOpacity: 0.2,
+    shadowOffset: { width: 0, height: 2 },
+    elevation: 5,
     overflow: "hidden",
   },
-  memoryImage: {
-    width: "100%",
-    height: "100%",
-  },
-  highlightsContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginLeft: 20,
-    marginTop: 10,
-  },
-  highlightYear: {
-    fontSize: 16,
-    color: "#666666",
-    marginLeft: 10,
-  },
-  brandValueCard: {
-    backgroundColor: "#EFEFEF",
-    margin: 20,
-    padding: 15,
-    borderRadius: 10,
-  },
-  brandValueText: {
-    fontSize: 14,
-    color: "#333333",
-    lineHeight: 20,
-  },
-  logoutButton: {
-    marginTop: 20,
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    backgroundColor: "#ff4d4d",
-    borderRadius: 8,
+  openButton: {
+    marginTop: 50,
     alignSelf: "center",
+    padding: 10,
+    backgroundColor: "#007bff",
+    borderRadius: 5,
   },
-  logoutText: {
+  openButtonText: {
     color: "#fff",
-    fontWeight: "bold",
-    fontSize: 16,
+  },
+  closeButton: {
+    alignSelf: "flex-end",
+    padding: 8,
+  },
+  closeButtonText: {
+    color: "red",
+  },
+  bottomLeftButton: {
+    position: "absolute",
+    bottom: 110,
+    left: 16,
+  },
+  bottomRightButton: {
+    position: "absolute",
+    bottom: 110,
+    right: 16,
   },
 });

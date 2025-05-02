@@ -13,13 +13,13 @@ import React, { useState, useEffect } from "react";
 import ScreenWrapper from "../../components/ScreenWrapper";
 import { useRouter } from "expo-router";
 import { supabase } from "../../lib/supabase";
-import Header from "../component/header";
+import Header from "./header";
 import { useAuth } from "../../context/AuthContext";
 import { getUserData } from "../../services/userService";
 import { Heart, Camera, Mail } from "lucide-react-native";
 import { useFetchUserProfile } from "../hooks/fetchUser";
 
-const MyProfile = () => {
+const Profile = () => {
   const router = useRouter();
   const { user } = useAuth();
   const { loading } = useFetchUserProfile();
@@ -35,11 +35,7 @@ const MyProfile = () => {
   return (
     <ScreenWrapper>
       <Header />
-      <ScrollView
-        style={styles.container}
-        contentContainerStyle={{ paddingBottom: 16 }}
-        showsVerticalScrollIndicator={false}
-      >
+      <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
         <View style={styles.headerContainer}>
           {/* Profile Image */}
           <View style={styles.coverImage}>
@@ -97,7 +93,7 @@ const MyProfile = () => {
   );
 };
 
-export default MyProfile;
+export default Profile;
 
 const styles = StyleSheet.create({
   loadingContainer: {
@@ -153,6 +149,7 @@ const styles = StyleSheet.create({
     marginVertical: 10,
     paddingHorizontal: 16,
     marginTop: 16,
+    opacity: 0.6,
   },
   statsRow: {
     flexDirection: "row",
