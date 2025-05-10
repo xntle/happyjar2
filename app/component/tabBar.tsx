@@ -1,18 +1,16 @@
-import React from 'react';
+import React from "react";
 import {
   View,
   Text,
   TouchableOpacity,
   StyleSheet,
-  Platform,
-  StyleProp,
   ViewStyle,
-  TextStyle
-} from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { usePathname } from 'expo-router';
+  TextStyle,
+} from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { usePathname } from "expo-router";
+import { House, Plus, User, Megaphone, Newspaper } from "phosphor-react-native";
 
-// Define our own props instead of depending on @react-navigation/bottom-tabs
 interface Route {
   key: string;
   name: string;
@@ -42,22 +40,24 @@ interface TabBarProps {
   };
 }
 
-export default function TabBar({ state, descriptors, navigation }: TabBarProps) {
+export default function TabBar({
+  state,
+  descriptors,
+  navigation,
+}: TabBarProps) {
   const insets = useSafeAreaInsets();
   const pathname = usePathname();
-  
-  // Hide tab bar on login, signup, and welcome screens
-  const hideTabBarScreens = ['/login', '/signUp', '/welcome'];
-  
-  // Check if current pathname should hide the tab bar
-  if (hideTabBarScreens.includes(pathname as string)) {
-    return null;
-  }
 
-  // A helper function to handle tab press
-  const handlePress = (routeName: string, isFocused: boolean, index: number) => {
+  const hideTabBarScreens = ["/login", "/signUp", "/welcome"];
+  if (hideTabBarScreens.includes(pathname as string)) return null;
+
+  const handlePress = (
+    routeName: string,
+    isFocused: boolean,
+    index: number
+  ) => {
     const event = navigation.emit({
-      type: 'tabPress',
+      type: "tabPress",
       target: state.routes[index].key,
       canPreventDefault: true,
     });
@@ -68,118 +68,101 @@ export default function TabBar({ state, descriptors, navigation }: TabBarProps) 
   };
 
   return (
-    <View style={[styles.tabBarContainer, { paddingBottom: insets.bottom } as ViewStyle]}>
+    <View
+      style={[
+        styles.tabBarContainer,
+        { paddingBottom: insets.bottom } as ViewStyle,
+      ]}
+    >
+      {/* Tab items left and right of MidButton */}
       {state.routes.map((route, index) => {
-        // isFocused for the current tab
         const isFocused = state.index === index;
         const { options } = descriptors[route.key];
+        const label = options.tabBarLabel ?? options.title ?? route.name;
 
-        // We can get the label from tabBarLabel or route name
-        const label =
-          options.tabBarLabel !== undefined
-            ? options.tabBarLabel
-            : options.title !== undefined
-            ? options.title
-            : route.name;
+        if (route.name === "MidButton") return null;
 
-        // If we want to style the center tab differently:
-        const isCenterTab = route.name === 'MidButton';
+        let IconComponent = User;
+        if (label === "Home") IconComponent = House;
+        else if (label === "Profile") IconComponent = User;
+        else if (label === "Shoutout") IconComponent = Megaphone;
+        else if (label === "Feed") IconComponent = Newspaper;
 
-        // Example icons or text placeholders
-        let iconName = label as string;
-        if (label === 'Home') iconName = '🏠';
-        if (label === 'Shoutout') iconName = '📣';
-        if (label === 'Feed') iconName = '📰';
-        if (label === 'Profile') iconName = '👤';
-        if (label === 'MidButton') iconName = '➕';
-
-        // We can have a separate, bigger button for the center
-        if (isCenterTab) {
-          return (
-            <TouchableOpacity
-              key={route.key}
-              onPress={() => handlePress(route.name, isFocused, index)}
-              style={styles.midButtonContainer as StyleProp<ViewStyle>}
-              activeOpacity={0.8}
-            >
-              <View style={styles.midButton as StyleProp<ViewStyle>}>
-                <Text style={styles.midButtonIcon as StyleProp<TextStyle>}>{iconName}</Text>
-              </View>
-            </TouchableOpacity>
-          );
-        }
-
-        // Normal tab item
         return (
           <TouchableOpacity
             key={route.key}
             onPress={() => handlePress(route.name, isFocused, index)}
-            style={styles.tabItem as StyleProp<ViewStyle>}
+            style={styles.tabItem}
             activeOpacity={0.8}
           >
-            <Text style={[
-              styles.icon as StyleProp<TextStyle>, 
-              isFocused && (styles.iconFocused as StyleProp<TextStyle>)
-            ]}>
-              {iconName}
-            </Text>
-            <Text style={[
-              styles.label as StyleProp<TextStyle>, 
-              isFocused && (styles.labelFocused as StyleProp<TextStyle>)
-            ]}>
+            <IconComponent
+              size={24}
+              weight={isFocused ? "fill" : "regular"}
+              color={isFocused ? "tomato" : "#444"}
+            />
+            <Text style={[styles.label, isFocused && styles.labelFocused]}>
               {label}
             </Text>
           </TouchableOpacity>
         );
       })}
+
+      {/* Center floating MidButton */}
+      <TouchableOpacity
+        key="midButton"
+        onPress={() => {
+          const index = state.routes.findIndex((r) => r.name === "MidButton");
+          handlePress("MidButton", state.index === index, index);
+        }}
+        style={styles.midButtonContainer}
+        activeOpacity={0.8}
+      >
+        <View style={styles.midButton}>
+          <Plus size={20} color="#fff" />
+        </View>
+      </TouchableOpacity>
     </View>
   );
 }
-
 const styles = StyleSheet.create({
   tabBarContainer: {
-    flexDirection: 'row',
-    alignItems: 'flex-end',
-    justifyContent: 'center',
-    height: 96,
-    backgroundColor: '#888888',
-  },
+    flexDirection: "row",
+    alignItems: "flex-end",
+    justifyContent: "space-around",
+    backgroundColor: "#bbbbbb",
 
+    height: 96,
+  },
   tabItem: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  icon: {
-    fontSize: 18,
-  },
-  iconFocused: {
-    color: 'tomato',
+    alignItems: "center",
+    justifyContent: "center",
   },
   label: {
     fontSize: 12,
-    color: '#444',
+    color: "#444",
   },
   labelFocused: {
-    color: 'tomato',
+    color: "tomato",
   },
-  // Updated middle button styles:
   midButtonContainer: {
-    flex: 1,
-    alignItems: 'center',
+    position: "absolute",
+    bottom: 20, // slightly above the tab bar
+    left: "50%",
+    transform: [{ translateX: -32 }], // center horizontally
+    zIndex: 10,
   },
   midButton: {
     width: 64,
     height: 64,
     borderRadius: 32,
-    backgroundColor: '#000000',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  midButtonIcon: {
-    fontSize: 24,
-    color: '#fff',
-    alignSelf: 'center',
-    verticalAlign: 'middle',
+    backgroundColor: "#000000",
+    alignItems: "center",
+    justifyContent: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 5,
   },
 });

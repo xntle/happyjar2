@@ -1,18 +1,27 @@
 import React from "react";
 import { Dimensions, StyleSheet, View, Pressable, Text } from "react-native";
-import Animated, { useSharedValue, useAnimatedStyle, withTiming, useAnimatedGestureHandler } from "react-native-reanimated";
-import { Gesture, GestureHandlerRootView, PanGestureHandler } from "react-native-gesture-handler";
-import MyProfile from "./myProfile";
-import JarHeader from "../component/jarHeader";
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withTiming,
+  useAnimatedGestureHandler,
+} from "react-native-reanimated";
+import {
+  Gesture,
+  GestureHandlerRootView,
+  PanGestureHandler,
+} from "react-native-gesture-handler";
+import MyProfile from "./myProfile.jsx";
+import JarHeader from "../component/jarHeader.tsx";
 import FloatingActionButton from "../component/floatingActionButton.tsx";
 import { DiceFive, Jar } from "phosphor-react-native";
 
 const SCREEN_HEIGHT = Dimensions.get("window").height;
 const SHEET_HEIGHT = 700; // Adjust as needed
 
-export default function TopSheet() {
+export default function Profile() {
   const translateY = useSharedValue(-SHEET_HEIGHT);
-  
+
   const gestureHandler = useAnimatedGestureHandler({
     onStart: (event, context) => {
       context.startY = translateY.value;
@@ -54,16 +63,22 @@ export default function TopSheet() {
       </Pressable>
       <JarHeader />
       <FloatingActionButton
-        onPress={() => console.log('Dice pressed')}
+        onPress={() => console.log("Dice pressed")}
         size={64}
-        icon={<DiceFive size={32} color="#5A5A5A" style={{ transform: [{ rotate: '22.5deg' }] }} />}
+        icon={
+          <DiceFive
+            size={32}
+            color="#5A5A5A"
+            style={{ transform: [{ rotate: "22.5deg" }] }}
+          />
+        }
         backgroundColor="#fff"
         style={styles.bottomLeftButton}
       />
 
       {/* Bottom-Right Round Button */}
       <FloatingActionButton
-        onPress={() => console.log('Calendar pressed')}
+        onPress={() => console.log("Calendar pressed")}
         size={64}
         icon={<Jar size={32} color="#5A5A5A" />}
         backgroundColor="#fff"
@@ -76,7 +91,7 @@ export default function TopSheet() {
             <Text style={styles.closeButtonText}>Close</Text>
           </Pressable> */}
           {/* Your top sheet content */}
-            <MyProfile />
+          <MyProfile />
         </Animated.View>
       </PanGestureHandler>
     </GestureHandlerRootView>
@@ -97,8 +112,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowOffset: { width: 0, height: 2 },
     elevation: 5,
-    paddingBottom: 30,
-
+    overflow: "hidden",
   },
   openButton: {
     marginTop: 50,
@@ -118,13 +132,13 @@ const styles = StyleSheet.create({
     color: "red",
   },
   bottomLeftButton: {
-    position: 'absolute',
-    bottom: 50,
+    position: "absolute",
+    bottom: 110,
     left: 16,
   },
   bottomRightButton: {
-    position: 'absolute',
-    bottom: 50,
+    position: "absolute",
+    bottom: 110,
     right: 16,
   },
 });

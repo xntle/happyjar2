@@ -13,7 +13,7 @@ import React, { useState, useEffect } from "react";
 import ScreenWrapper from "../../components/ScreenWrapper";
 import { useRouter } from "expo-router";
 import { supabase } from "../../lib/supabase";
-import Header from "../component/header";
+import Header from "./header";
 import { useAuth } from "../../context/AuthContext";
 import { getUserData } from "../../services/userService";
 import { Heart, Camera, Mail } from "lucide-react-native";
@@ -88,46 +88,6 @@ const Profile = () => {
             </View>
           </View>
         </View>
-
-        <Text style={styles.sectionTitle}>Memories</Text>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-          {/* Replace these placeholders with real images or dynamic data */}
-          <View style={styles.memoryItem}>
-            <Image
-              source={{ uri: "https://via.placeholder.com/100x100" }}
-              style={styles.memoryImage}
-            />
-          </View>
-          <View style={styles.memoryItem}>
-            <Image
-              source={{ uri: "https://via.placeholder.com/100x100" }}
-              style={styles.memoryImage}
-            />
-          </View>
-          <View style={styles.memoryItem}>
-            <Image
-              source={{ uri: "https://via.placeholder.com/100x100" }}
-              style={styles.memoryImage}
-            />
-          </View>
-          <View style={styles.memoryItem}>
-            <Image
-              source={{ uri: "https://via.placeholder.com/100x100" }}
-              style={styles.memoryImage}
-            />
-          </View>
-        </ScrollView>
-
-        <Text style={styles.sectionTitle}>Highlights</Text>
-
-        {/* Brand Value Section */}
-        <View style={styles.brandValueCard}>
-          <Text style={styles.brandValueText}>
-            Lorem ipsum dolor sit amet consectetur. A tristique habitant in
-            posuere. Turpis nunc ullamcorper lacus turpis nunc facilisis mollis
-            aliquam.
-          </Text>
-        </View>
       </ScrollView>
     </ScreenWrapper>
   );
@@ -189,6 +149,7 @@ const styles = StyleSheet.create({
     marginVertical: 10,
     paddingHorizontal: 16,
     marginTop: 16,
+    opacity: 0.6,
   },
   statsRow: {
     flexDirection: "row",
